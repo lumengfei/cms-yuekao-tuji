@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.lumengjun.dao.StudentMapper">
+  <resultMap type="com.lumengjun.entity.Student" id="students">
+  	<id  property="id" column="id"/>
+  	<association property="provinces" javaType="com.lumengjun.entity.Provinces" column="provinces" select="getprovinces"></association>
+  	<association property="city" javaType="com.lumengjun.entity.City" column="city" select="getcity"></association>
+  	<association property="county" javaType="com.lumengjun.entity.County" column="county" select="getcounty"></association>
+ 	<collection property="courses" ofType="com.lumengjun.entity.Course" column="id" select="getcourse"></collection>
+  </resultMap>
+  <select id="getcourse" resultType="com.lumengjun.entity.Course">
+  	SELECT c.* FROM course c LEFT JOIN studentcourse s on(c.id=s.coures_id) WHERE s.student_id=#{value}
+  </select>
+  <select id="getprovinces" resultType="com.lumengjun.entity.Provinces">
+  	SELECT * FROM city WHERE id=#{id}
+  </select>
+  <select id="getcity" resultType="com.lumengjun.entity.City">
+  	SELECT * FROM city WHERE id=#{id}
+  </select>
+  <select id="getcounty" resultType="com.lumengjun.entity.County">
+  	SELECT * FROM city WHERE id=#{id}
+  </select>
+  
+  
+  
+  
+  <select id="getStudentpage" resultMap="students">
+  	SELECT id,`name`,gender,provinces,city,county,TIMESTAMPDIFF(YEAR,birth,NOW()) birth,date,hobby,height,weight,idNumber FROM student
+  </select>
+  
+  
+  <insert id="addStudent" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+  	INSERT INTO student(name,gender,provinces,city,county,birth,date,hobby,height,weight,idNumber) VALUES(#{name},#{gender},#{provinces.id},#{city.id},#{county.id},#{birth},NOW(),#{hobby},#{height},#{weight},#{idNumber})
+  </insert>
+  
+  <select id="getStudentId" resultMap="students">
+  	SELECT id,`name`,gender,provinces,city,county,birth,date,hobby,height,weight,idNumber FROM student WHERE id=#{value}
+  </select>
+  
+  </mapper>
+  
